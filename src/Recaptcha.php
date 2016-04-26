@@ -1,81 +1,46 @@
 <?php
 
-namespace Greggilbert\Recaptcha;
+namespace Mark86092\Recaptcha;
+
+use ReCaptcha\ReCaptcha as GoogleReCaptcha;
 
 class Recaptcha
 {
+    protected $recaptcha;
+    protected $response;
 
-    protected $service;
-
-    protected $config = [ ];
-
-    protected $dataParameterKeys = [ 'theme', 'type', 'callback', 'tabindex', 'expired-callback' ];
-
-
-    public function __construct($service, $config)
+    public function __construct(GoogleReCaptcha $recaptcha)
     {
-        $this->service = $service;
-        $this->config  = $config;
+        $this->recaptcha = $recaptcha;
+        $this->response = null;
     }
 
     /**
-     * Render the recaptcha
+     * Call out to reCAPTCHA and process the response.
      *
-     * @param array $options
+     * @param string $response
      *
-     * @return view
+     * @return bool
      */
-    public function render($options = [ ])
+    public function check()
     {
-        $mergedOptions = array_merge($this->config['options'], $options);
-
-        $data = [
-            'public_key' => value($this->config['public_key']),
-            'options'    => $mergedOptions,
-            'dataParams' => $this->extractDataParams($mergedOptions),
-        ];
-
-        if (array_key_exists('lang', $mergedOptions) && "" !== trim($mergedOptions['lang'])) {
-            $data['lang'] = $mergedOptions['lang'];
+        if (is_null($this->response)) {
+            return false;
         }
 
-        $view = $this->getView($options);
-
-        return app('view')->make($view, $data);
+        if ($this->response->isSuccess()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    /**
-     * Generate the view path
-     *
-     * @param array $options
-     *
-     * @return string
-     */
-    protected function getView($options = [ ])
+    public function verify($response, $remoteIp = null)
     {
-        $view = 'recaptcha::' . $this->service->getTemplate();
-
-        $configTemplate = $this->config['template'];
-
-        if (array_key_exists('template', $options)) {
-            $view = $options['template'];
-        } elseif ("" !== trim($configTemplate)) {
-            $view = $configTemplate;
+        if (is_null($this->response)) {
+            $this->response = $this->recaptcha->verify($response, $remoteIp);
         }
 
-        return $view;
-    }
-
-    /**
-     * Extract the parameters to be converted to data-* attributes
-     * See the docs at https://developers.google.com/recaptcha/docs/display
-     *
-     * @param array $options
-     *
-     * @return array
-     */
-    protected function extractDataParams($options = [ ])
-    {
-        return array_only($options, $this->dataParameterKeys);
+        return $this;
     }
 }
