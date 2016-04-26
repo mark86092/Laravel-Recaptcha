@@ -24,5 +24,10 @@
             "Mark86092\\Recaptcha\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Mark86092\\Tests\\Recaptcha\\": "tests/"
+        }
+    },
     "minimum-stability": "dev"
 }
