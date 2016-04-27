@@ -17,6 +17,12 @@ Add the following line to the `require` section of `composer.json`:
 }
 ```
 
+or
+
+```
+composer require mark86092/recaptcha
+```
+
 ## Setup
 
 1. In `/config/app.php`, add the following to `providers`:
@@ -28,13 +34,20 @@ Add the following line to the `require` section of `composer.json`:
   ```
   'Recaptcha' => Mark86092\Recaptcha\Facades\RecaptchaChecker::class,
   ```
-2. Run `php artisan vendor:publish --provider="Mark86092\Recaptcha\RecaptchaServiceProvider"`.
+
+2. Run
+
+  ```
+  php artisan vendor:publish --provider="Mark86092\Recaptcha\RecaptchaServiceProvider"
+  ```
+
 3. In `/config/recaptcha.php`, enter your reCAPTCHA public and private keys. Or you can specify your public and private keys in `.env` file.
-For example, (this is the test key from google)
-```
-RECAPTCHA_PUBLIC_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
-RECAPTCHA_PRIVATE_KEY=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
-```
+  For example, (this is the test key from google)
+
+  ```
+  RECAPTCHA_PUBLIC_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+  RECAPTCHA_PRIVATE_KEY=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+  ```
 
   * You can generate a key set in [the reCAPTCHA admin](https://www.google.com/recaptcha/admin).
 
